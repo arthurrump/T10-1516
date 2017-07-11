@@ -5,6 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
+using Hamburger1.Views;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 
 namespace Hamburger1.ViewModels
 {
@@ -45,17 +48,31 @@ namespace Hamburger1.ViewModels
             await Task.CompletedTask;
         }
 
-        public void GotoDetailsPage() =>
-            NavigationService.Navigate(typeof(Views.DetailPage), Value);
+        public void GotoDetailsPage()
+        {
+            var navItemStack = new StackPanel { Orientation = Orientation.Horizontal };
+            navItemStack.Children.Add(new SymbolIcon
+            {
+                Width = 48,
+                Height = 48,
+                Symbol = Symbol.Page
+            });
+            navItemStack.Children.Add(new TextBlock
+            {
+                Margin = new Thickness(12, 0, 0, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+                Text = $"Details: {Value}"
+            });
 
-        public void GotoSettings() =>
-            NavigationService.Navigate(typeof(Views.SettingsPage), 0);
+            Shell.Instance.HamburgerPrimaryButtons.Add(
+                new Template10.Controls.HamburgerButtonInfo
+                {
+                    PageType = typeof(DetailPage),
+                    PageParameter = Value,
+                    Content = navItemStack
+                });
 
-        public void GotoPrivacy() =>
-            NavigationService.Navigate(typeof(Views.SettingsPage), 1);
-
-        public void GotoAbout() =>
-            NavigationService.Navigate(typeof(Views.SettingsPage), 2);
-
+            NavigationService.Navigate(typeof(DetailPage), Value);
+        }
     }
 }
